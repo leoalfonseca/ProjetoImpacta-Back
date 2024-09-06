@@ -8,6 +8,8 @@ import {
   PrimaryGeneratedColumn,
   PrimaryColumn,
   OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Report } from '../reports/report.entity';
 
@@ -30,6 +32,12 @@ export class User {
 
   @Column({ default: true })
   admin: boolean;
+
+  @CreateDateColumn({ type: 'datetime' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'datetime' })
+  updatedAt: Date;
 
   @OneToMany(() => Report, (report) => report.user)
   reports: Report[];

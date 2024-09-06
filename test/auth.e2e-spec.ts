@@ -16,25 +16,25 @@ describe('Authentication System', () => {
   });
 
   it('handles a signup request', () => {
-    const email = 'asdlkq4321@akl.com';
+    const username = 'teste';
 
     return request(app.getHttpServer())
       .post('/auth/signup')
-      .send({ email, password: 'alskdfjl' })
+      .send({ username, password: '1234' })
       .expect(201)
       .then((res) => {
-        const { id, email } = res.body;
+        const { id, username } = res.body;
         expect(id).toBeDefined();
-        expect(email).toEqual(email);
+        expect(username).toEqual(username);
       });
   });
 
   it('signup as a new user then get the currently logged in user', async () => {
-    const email = 'asdas@asdasd.com';
+    const username = 'teste';
 
     const res = await request(app.getHttpServer())
       .post('/auth/signup')
-      .send({ email, password: 'alskdfjl' })
+      .send({ username, password: '1234' })
       .expect(201);
 
     const cookie = res.get('Set-Cookie');
@@ -44,6 +44,6 @@ describe('Authentication System', () => {
       .set('Cookie', cookie)
       .expect(200);
 
-    expect(body.email).toEqual(email);
+    expect(body.username).toEqual(username);
   });
 });

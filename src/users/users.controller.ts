@@ -6,7 +6,6 @@ import {
   Patch,
   Delete,
   Param,
-  Query,
   NotFoundException,
   UseGuards,
 } from '@nestjs/common';
@@ -16,51 +15,17 @@ import { UsersService } from './users.service';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from './dtos/user.dto';
 import { AuthService } from './auth.service';
-import { CurrentUser } from './decorators/current-user.decorator';
-import { User } from './user.entity';
 import { AuthGuard } from '../guards/auth.guard';
 import { ApiTags } from '@nestjs/swagger';
-import { LoginUserDto } from './dtos/login-user.dto';
 
-@ApiTags('Auth')
-@Controller('auth')
+@ApiTags('Users')
+@Controller('users')
 @Serialize(UserDto)
 export class UsersController {
-  constructor(
-    private usersService: UsersService,
-    private authService: AuthService,
-  ) {}
-
-  @Get('/whoami')
-  @UseGuards(AuthGuard)
-  whoAmI(@CurrentUser() user: User) {
-    return user;
-  }
-
-  @Post('/signout')
-  signOut() {
-    return { message: 'Usuário deslogado com sucesso' };
-  }
-
-  @Post('/signup')
-  async createUser(@Body() body: CreateUserDto) {
-    const user = await this.authService.signup(
-      body.email,
-      body.password,
-      body.username,
-      body.name,
-    );
-    return user;
-  }
-
-  @Post('/signin')
-  async signin(@Body() body: LoginUserDto) {
-    const { username, password } = body;
-    const { token } = await this.authService.signin(username, password);
-    return { token };
-  }
+  constructor(private usersService: UsersService) {}
 
   @Get('/:id')
+  @UseGuards(AuthGuard)
   async findUser(@Param('id') id: string) {
     const user = await this.usersService.findOne(id);
     if (!user) {
@@ -70,17 +35,32 @@ export class UsersController {
   }
 
   @Get()
-  findAllUsers(@Query('email') email: string) {
-    return this.usersService.find(email);
+  @UseGuards(AuthGuard)
+  getUsers() {
+    return this.usersService.findAll();
+  }
+
+  @Post()
+  @UseGuards(AuthGuard)
+  async createUser(@Body() body: CreateUserDto) {
+    const user = await this.usersService.create(
+      body.email,
+      body.password,
+      body.username,
+      body.name,
+    );
+    return user;
   }
 
   @Delete('/:id')
+  @UseGuards(AuthGuard)
   async removeUser(@Param('id') id: string) {
     await this.usersService.remove(id);
     return { message: 'Usuário removido com sucesso' };
   }
 
   @Patch('/:id')
+  // @UseGuards(AuthGuard)
   async updateUser(@Param('id') id: string, @Body() body: UpdateUserDto) {
     const user = await this.usersService.update(id, body);
     return user;
