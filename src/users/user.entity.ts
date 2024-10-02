@@ -33,10 +33,10 @@ export class User {
   @Column({ default: true })
   admin: boolean;
 
-  @CreateDateColumn({ type: 'datetime' })
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'datetime' })
+  @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
   @OneToMany(() => Report, (report) => report.user)
