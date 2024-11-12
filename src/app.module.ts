@@ -5,11 +5,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
-import { ReportsModule } from './reports/reports.module';
 import { User } from './users/user.entity';
 import { Event } from './calendar/entities/event.entity';
-import { Report } from './reports/report.entity';
 import { CalendarModule } from './calendar/calendar.module';
+import { ProductsModule } from './products/products.module';
+import { Product } from './products/product.entity';
 const cookieSession = require('cookie-session');
 
 @Module({
@@ -29,13 +29,13 @@ const cookieSession = require('cookie-session');
           password: config.get<string>('DB_PASS'),
           database: config.get<string>('DB_NAME'), 
           synchronize: true, 
-          entities: [User, Report, Event],
+          entities: [User, Event, Product],
         };
       },
     }),
     UsersModule,
-    ReportsModule,
     CalendarModule,
+    ProductsModule,
   ],
   controllers: [AppController],
   providers: [

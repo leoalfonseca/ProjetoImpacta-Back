@@ -5,13 +5,12 @@ import {
   AfterUpdate,
   Entity,
   Column,
-  PrimaryGeneratedColumn,
   PrimaryColumn,
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Report } from '../reports/report.entity';
+import { Product } from '../products/product.entity';
 
 @Entity()
 export class User {
@@ -39,8 +38,8 @@ export class User {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
-  @OneToMany(() => Report, (report) => report.user)
-  reports: Report[];
+  @OneToMany(() => Product, (product) => product.user)
+  products: Product[];
 
   @AfterInsert()
   logInsert() {
