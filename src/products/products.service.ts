@@ -15,7 +15,6 @@ export class ProductsService {
   ) {}
 
   async create(productData: CreateProductDto): Promise<Product> {
-
     const user = await this.userRepository.findOne({
       where: { id: productData.userId },
     });
@@ -29,9 +28,21 @@ export class ProductsService {
   }
 
   async findAll(): Promise<Product[]> {
-    return this.productRepository.find({ relations: ['user'] });
+    return await this.productRepository.find({
+      relations: ['user'],
+      select: {
+        user: {
+          id: true,
+          email: true,
+          username: true,
+          name: true,
+        },
+      },
+      order: {
+        createdAt: 'DESC',
+      },
+    });
   }
-
   async updateStock(productId: string, amount: number): Promise<Product> {
     const product = await this.productRepository.findOne({
       where: { id: productId },
@@ -61,11 +72,15 @@ export class ProductsService {
     const product = await this.productRepository.findOne({
       where: { id: productId },
     });
+
+    const user = await this.userRepository.findOne({
+      where: { id: updateProductDto.userId },
+    });
     if (!product) {
       throw new NotFoundException(`Produto com ID ${productId} não encontrado`);
     }
 
-    Object.assign(product, updateProductDto);
+    Object.assign(product, { ...updateProductDto, user });
     return this.productRepository.save(product);
   }
 

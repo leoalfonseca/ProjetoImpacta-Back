@@ -1,16 +1,35 @@
-export class CreateProductDto {
-  name: string;
-  description: string;
-  stock: number;
-  userId: string; 
-}
+import { IsString, IsInt, IsUUID, IsOptional } from 'class-validator';
 
-export class UpdateStockDto {
-  amount: number;
+export class CreateProductDto {
+  @IsString()
+  name: string;
+
+  @IsString()
+  description: string;
+
+  @IsInt()
+  stock: number;
+
+  @IsUUID()
+  userId: string;
 }
 
 export class UpdateProductDto {
+  @IsString()
   name?: string;
+
+  @IsString()
   description?: string;
+
+  @IsInt()
   stock?: number;
+
+  @IsOptional()
+  @IsUUID()
+  userId?: string;
+}
+
+export class UpdateStockDto {
+  @IsInt()
+  amount: number;
 }

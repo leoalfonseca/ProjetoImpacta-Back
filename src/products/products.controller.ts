@@ -25,7 +25,6 @@ export class ProductsController {
   @Post()
   @UseGuards(AuthGuard)
   create(@Body() createProductDto: CreateProductDto) {
-    console.log('Received DTO:', createProductDto);
     return this.productsService.create(createProductDto);
   }
 
